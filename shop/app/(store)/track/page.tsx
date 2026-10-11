@@ -25,17 +25,17 @@ export default async function TrackPage({ searchParams }: { searchParams: Promis
         <h1 className="display text-5xl">ติดตามออเดอร์</h1>
         <p className="text-sm text-muted">กรอกเลขออเดอร์และอีเมลที่ใช้สั่งซื้อ</p>
         {error && (
-          <p role="alert" className="border border-accent bg-accent/5 px-4 py-3 text-sm text-accent">
+          <p role="alert" className="rounded-2xl border border-accent bg-accent/5 px-4 py-3 text-sm text-accent">
             ไม่พบออเดอร์ กรุณาตรวจสอบเลขออเดอร์และอีเมล
           </p>
         )}
         <label className="block">
           <span className="eyebrow mb-2 block text-muted">เลขออเดอร์</span>
-          <input name="number" required placeholder="MF1A2B3C4D5E" className="w-full border border-[var(--line)] bg-snow/60 px-4 py-3 text-sm uppercase outline-none focus:border-ink" />
+          <input name="number" required placeholder="MF1A2B3C4D5E" className="w-full rounded-2xl border border-[var(--line)] bg-snow/60 px-4 py-3 text-sm uppercase outline-none focus:border-ink" />
         </label>
         <label className="block">
           <span className="eyebrow mb-2 block text-muted">อีเมล</span>
-          <input name="email" type="email" required className="w-full border border-[var(--line)] bg-snow/60 px-4 py-3 text-sm outline-none focus:border-ink" />
+          <input name="email" type="email" required className="w-full rounded-2xl border border-[var(--line)] bg-snow/60 px-4 py-3 text-sm outline-none focus:border-ink" />
         </label>
         <Button className="w-full">ค้นหา</Button>
       </form>

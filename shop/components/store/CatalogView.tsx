@@ -62,28 +62,28 @@ export async function CatalogView({
 
   const chip = (active: boolean) =>
     cn(
-      "inline-flex items-center gap-2 border px-4 py-2 text-xs font-semibold uppercase tracking-[0.12em] transition-colors",
-      active ? "border-ink bg-ink text-snow" : "border-[var(--line)] hover:border-ink",
+      "inline-flex items-center gap-2 rounded-full border px-4 py-2 text-sm transition-colors",
+      active ? "border-accent bg-accent text-white" : "border-[var(--line)] hover:border-accent hover:text-accent",
     );
 
   return (
-    <div className="container-x pb-28">
+    <div className="container-x pb-24">
       {/* Filters */}
-      <div className="space-y-5 border-y border-[var(--line)] py-6">
+      <div className="space-y-5 border-b border-[var(--line)] pb-6">
         <form action={basePath} className="flex gap-2">
           {Object.entries(params).map(([k, v]) => k !== "q" && v && <input key={k} type="hidden" name={k} value={v} />)}
           <input
             name="q"
             defaultValue={params.q}
             placeholder="ค้นหาชื่อช่อ หรือชนิดดอกไม้ เช่น กุหลาบ"
-            className="w-full max-w-md border border-[var(--line)] bg-transparent px-4 py-3 text-sm outline-none focus:border-ink"
+            className="w-full max-w-md rounded-full border border-[var(--line)] bg-transparent px-5 py-3 text-sm outline-none focus:border-accent"
             aria-label="ค้นหา"
           />
-          <button className="border border-ink bg-ink px-6 text-xs font-semibold uppercase tracking-[0.14em] text-snow">ค้นหา</button>
+          <button className="rounded-full bg-accent px-7 text-sm font-medium text-white hover:bg-accent-hover">ค้นหา</button>
         </form>
 
         <div className="flex flex-wrap items-center gap-2">
-          <span className="eyebrow mr-2 text-muted">หมวด</span>
+          <span className="mr-2 w-12 shrink-0 text-sm text-muted">หมวด</span>
           <Link href={href({ category: undefined })} className={chip(!params.category)}>ทั้งหมด</Link>
           {cats.map((c) => (
             <Link key={c.id} href={href({ category: c.slug })} className={chip(params.category === c.slug)}>
@@ -94,7 +94,7 @@ export async function CatalogView({
 
         {!fixed.occasion && (
           <div className="flex flex-wrap items-center gap-2">
-            <span className="eyebrow mr-2 text-muted">โอกาส</span>
+            <span className="mr-2 w-12 shrink-0 text-sm text-muted">โอกาส</span>
             <Link href={href({ occasion: undefined })} className={chip(!params.occasion)}>ทั้งหมด</Link>
             {occs.map((o) => (
               <Link key={o.id} href={href({ occasion: o.slug })} className={chip(params.occasion === o.slug)}>
@@ -105,7 +105,7 @@ export async function CatalogView({
         )}
 
         <div className="flex flex-wrap items-center gap-2">
-          <span className="eyebrow mr-2 text-muted">สี</span>
+          <span className="mr-2 w-12 shrink-0 text-sm text-muted">สี</span>
           {COLORS.map((c) => (
             <Link
               key={c.slug}
@@ -123,7 +123,7 @@ export async function CatalogView({
 
         <div className="flex flex-wrap items-center justify-between gap-4">
           <div className="flex flex-wrap items-center gap-2">
-            <span className="eyebrow mr-2 text-muted">ราคา</span>
+            <span className="mr-2 w-12 shrink-0 text-sm text-muted">ราคา</span>
             {PRICES.map((p) => (
               <Link key={p.key} href={href({ price: p.key || undefined })} className={chip((params.price ?? "") === p.key)}>
                 {p.label}
@@ -131,7 +131,7 @@ export async function CatalogView({
             ))}
           </div>
           <div className="flex items-center gap-2 text-xs">
-            <span className="eyebrow text-muted">เรียง</span>
+            <span className="text-sm text-muted">เรียง</span>
             {SORTS.map((s) => (
               <Link
                 key={s.key}
@@ -155,7 +155,7 @@ export async function CatalogView({
           </Link>
         </div>
       ) : (
-        <div className="mt-8 grid grid-cols-2 gap-x-5 gap-y-12 lg:grid-cols-4 lg:gap-x-8">
+        <div className="mt-8 grid grid-cols-2 gap-x-4 gap-y-10 lg:grid-cols-4 lg:gap-x-6">
           {products.map((p) => (
             <ProductCard key={p.id} p={p} />
           ))}

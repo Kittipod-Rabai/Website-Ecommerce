@@ -2,8 +2,18 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { db } from "@/lib/db";
 import { CatalogView } from "@/components/store/CatalogView";
+import { PageBanner } from "@/components/store/PageBanner";
 
 export const dynamic = "force-dynamic";
+
+const PHOTO: Record<string, string> = {
+  birthday: "sunflower-mix",
+  valentine: "red-vase",
+  congrats: "sunflower-wrap",
+  "thank-you": "peach-bouquet",
+  "get-well": "sunflower-vase",
+  sympathy: "white-wrap",
+};
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
   const { slug } = await params;
@@ -24,13 +34,7 @@ export default async function OccasionPage({
   if (!occasion) notFound();
   return (
     <>
-      <section className="on-dark bg-ink pb-16 pt-36 text-snow">
-        <div className="container-x">
-          <p className="eyebrow mb-4 text-[#e8a0b0]">Occasion</p>
-          <h1 className="display text-6xl lg:text-8xl">{occasion.name}</h1>
-          <p className="mt-6 max-w-lg text-snow/65">{occasion.tagline}</p>
-        </div>
-      </section>
+      <PageBanner eyebrow="ดอกไม้ตามโอกาส" title={occasion.name} sub={occasion.tagline} photo={PHOTO[slug] ?? "rose-bouquet"} />
       <CatalogView basePath={`/occasions/${slug}`} params={sp} fixed={{ occasion: slug }} />
     </>
   );

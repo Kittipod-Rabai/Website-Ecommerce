@@ -35,7 +35,7 @@ export default async function MockPayPage({ params }: { params: Promise<{ number
 
   return (
     <div className="container-x flex min-h-[80vh] items-center justify-center pb-20 pt-32">
-      <div className="w-full max-w-md border border-[var(--line)] bg-snow/60 p-10 text-center">
+      <div className="w-full max-w-md border border-[var(--line)] rounded-3xl bg-snow/60 p-10 text-center">
         <p className="eyebrow mb-4 text-accent">จำลองการชำระเงิน (โหมดพัฒนา)</p>
         <h1 className="display text-4xl">ออเดอร์ {order.number}</h1>
         <p className="display mt-6 text-5xl tabular-nums">{formatBaht(order.total)}</p>

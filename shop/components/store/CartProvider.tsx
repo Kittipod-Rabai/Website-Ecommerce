@@ -11,7 +11,7 @@ export type CartLine = {
   name: string;
   label: string;
   priceSatang: number;
-  palette: string[];
+  image: string;
   qty: number;
   addOns: CartAddOn[];
 };
@@ -30,7 +30,7 @@ type CartCtx = {
 };
 
 const Ctx = createContext<CartCtx | null>(null);
-const STORAGE_KEY = "mf-cart-v1";
+const STORAGE_KEY = "mf-cart-v2";
 
 export const lineTotal = (l: CartLine) =>
   (l.priceSatang + l.addOns.reduce((s, a) => s + a.priceSatang, 0)) * l.qty;

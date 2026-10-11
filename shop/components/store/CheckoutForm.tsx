@@ -4,7 +4,7 @@ import { useEffect, useMemo, useState, useTransition } from "react";
 import Link from "next/link";
 import { Button } from "@/components/ui/Button";
 import { useCart, lineTotal } from "./CartProvider";
-import { FlowerArt } from "./FlowerArt";
+import Image from "next/image";
 import { formatBaht } from "@/lib/money";
 import { cn } from "@/lib/utils";
 import { listSlotOptions } from "@/lib/delivery";
@@ -37,7 +37,7 @@ function Field({
 }
 
 const inputCls =
-  "w-full border border-[var(--line)] bg-snow/60 px-4 py-3 text-sm outline-none transition-colors focus:border-ink";
+  "w-full rounded-2xl border border-[var(--line)] bg-snow/60 px-4 py-3 text-sm outline-none transition-colors focus:border-ink";
 
 export function CheckoutForm({
   defaultEmail,
@@ -157,7 +157,7 @@ export function CheckoutForm({
     <form onSubmit={onSubmit} className="grid gap-14 lg:grid-cols-[1.4fr_1fr] lg:gap-20" noValidate>
       <div className="space-y-14">
         {formError && (
-          <div role="alert" className="border border-accent bg-accent/5 px-5 py-4 text-sm text-accent">
+          <div role="alert" className="rounded-2xl border border-accent bg-accent/5 px-5 py-4 text-sm text-accent">
             {formError}
           </div>
         )}
@@ -179,7 +179,7 @@ export function CheckoutForm({
           {saved.length > 0 && (
             <div className="mb-5 flex flex-wrap gap-2">
               {saved.map((s) => (
-                <button type="button" key={s.id} onClick={() => applySaved(s)} className="border border-[var(--line)] px-3 py-2 text-xs hover:border-ink">
+                <button type="button" key={s.id} onClick={() => applySaved(s)} className="rounded-2xl border border-[var(--line)] px-3 py-2 text-xs hover:border-ink">
                   ใช้ที่อยู่: {s.recipientName}
                 </button>
               ))}
@@ -212,7 +212,7 @@ export function CheckoutForm({
         <section>
           <h2 className="display mb-6 text-3xl">3. วัน-เวลาจัดส่ง</h2>
           {!okOpts ? (
-            <p className="border border-dashed border-[var(--line)] px-5 py-8 text-center text-sm text-muted">
+            <p className="rounded-2xl border border-dashed border-[var(--line)] px-5 py-8 text-center text-sm text-muted">
               {loadingOpts ? "กำลังตรวจสอบคิวจัดส่ง…" : "กรอกรหัสไปรษณีย์เพื่อดูวันและเวลาที่จัดส่งได้"}
             </p>
           ) : (
@@ -261,7 +261,7 @@ export function CheckoutForm({
                         disabled={!s.available}
                         onClick={() => setSlotId(s.id)}
                         className={cn(
-                          "border px-4 py-4 text-sm transition-colors",
+                          "rounded-2xl border px-4 py-4 text-sm transition-colors",
                           slotId === s.id ? "border-ink bg-ink text-snow" : "border-[var(--line)] hover:border-ink",
                           !s.available && "cursor-not-allowed opacity-35 hover:border-[var(--line)]",
                         )}
@@ -299,13 +299,13 @@ export function CheckoutForm({
       </div>
 
       <aside className="lg:sticky lg:top-28 lg:self-start">
-        <div className="border border-[var(--line)] bg-snow/50 p-7">
+        <div className="rounded-2xl border border-[var(--line)] rounded-3xl bg-snow/50 p-7">
           <h2 className="display mb-6 text-3xl">สรุปออเดอร์</h2>
           <ul className="divide-y divide-[var(--line)]">
             {lines.map((l) => (
               <li key={l.key} className="flex gap-4 py-4">
-                <div className="h-20 w-16 shrink-0 overflow-hidden">
-                  <FlowerArt seed={l.slug} palette={l.palette} />
+                <div className="relative h-20 w-16 shrink-0 overflow-hidden rounded-xl">
+                  <Image src={l.image} alt={l.name} fill sizes="120px" className="object-cover" />
                 </div>
                 <div className="flex-1 text-sm">
                   <p className="display text-lg leading-tight">{l.name}</p>

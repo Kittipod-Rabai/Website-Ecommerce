@@ -1,5 +1,6 @@
 import { PrismaClient, OrderStatus } from "@prisma/client";
 import bcrypt from "bcryptjs";
+import { PRODUCT_PHOTOS, photoUrl } from "./photos";
 
 const db = new PrismaClient();
 
@@ -124,6 +125,7 @@ async function main() {
         description: p.desc,
         categoryId: catMap[p.cat],
         palette: JSON.stringify(PALETTES[p.color]),
+        images: JSON.stringify((PRODUCT_PHOTOS[p.slug] ?? []).map(photoUrl)),
         flowerTypes: JSON.stringify(p.flowers),
         colorTag: p.color,
         bestseller: !!p.best,

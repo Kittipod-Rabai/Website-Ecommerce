@@ -1,19 +1,20 @@
-# ROADMAP — ร้านดอกไม้ 4 สัปดาห์
+# แผนงาน 4 สัปดาห์ — Maison Fleur
 
-Stack: Next.js + TypeScript · Tailwind/shadcn · Prisma + PostgreSQL · Auth.js · Stripe (บัตร + PromptPay)
-สไตล์: editorial minimal แบบ Porsche (พื้นดำอุ่น/ครีม, serif headline, accent เบอร์กันดี, hero เต็มจอ, motion นุ่ม)
+เทคโนโลยี: Next.js + TypeScript · Tailwind · Prisma · Auth.js · Stripe (บัตร + PromptPay)
+สไตล์: premium minimal แบบ Porsche (พื้นดำอุ่น/ครีม, หัวข้อฟอนต์ serif, สีเน้นเบอร์กันดี, hero เต็มจอ)
 
-| สัปดาห์ | โฟกัส | งานหลัก | Deliverable |
+| สัปดาห์ | โฟกัส | งานหลัก | ผลลัพธ์ |
 |---|---|---|---|
-| **1** | Foundation + Storefront | Setup, design tokens, DB + seed, Navbar/Footer, Home, Catalog (กรองตามโอกาส/สี/ราคา), Product detail | ดู/ค้นหาช่อดอกไม้ได้ |
-| **2** | Cart + Delivery + Checkout | ตะกร้า, ตรรกะวัน-เวลาส่ง/cutoff/โซน/capacity, ข้อมูลผู้รับ+การ์ด, Stripe + webhook, หน้าติดตาม | สั่งซื้อ+เลือกวันส่ง+จ่ายเงินได้ (test mode) |
-| **3** | Account + Admin | ประวัติออเดอร์, Dashboard, จัดการออเดอร์, **ปฏิทินจัดส่ง**, CRUD สินค้า, ตั้ง capacity/โซน | เจ้าของร้านบริหารเองได้ |
-| **4** | Polish + Launch | Animation, SEO, security, tests, deploy, เอกสาร | ขึ้น production |
+| 1 | หน้าร้าน | ตั้งค่าโปรเจกต์, ธีม, ฐานข้อมูล, หน้าแรก, รายการสินค้า (กรอง/ค้นหา), หน้าสินค้า | ดู/ค้นหาช่อดอกไม้ได้ |
+| 2 | ตะกร้าและชำระเงิน | ตะกร้า, กติกาวัน-เวลาส่ง/โซน/คิว, ข้อมูลผู้รับและการ์ด, Stripe + webhook, ติดตามออเดอร์ | สั่งซื้อและจ่ายเงินได้ครบ |
+| 3 | บัญชีและแอดมิน | ประวัติออเดอร์, แดชบอร์ด, จัดการออเดอร์, ปฏิทินจัดส่ง, จัดการสินค้า, ตั้งคิว/โซน | เจ้าของร้านบริหารเองได้ |
+| 4 | ขัดเกลาและขึ้นระบบ | animation, SEO, ความปลอดภัย, เทสต์, deploy, เอกสาร | ขึ้นใช้งานจริง |
 
-## Status (agent อัปเดตที่นี่)
-- [ ] W1 Foundation + Storefront
-- [ ] W2 Cart + Delivery + Checkout
-- [ ] W3 Account + Admin
-- [ ] W4 Polish + Launch
+## สถานะ
+- [x] สัปดาห์ 1 — หน้าร้าน
+- [x] สัปดาห์ 2 — ตะกร้าและชำระเงิน
+- [ ] สัปดาห์ 3 — บัญชีและแอดมิน (บัญชีลูกค้าเสร็จแล้ว, แอดมินกำลังทำ)
+- [ ] สัปดาห์ 4 — ขัดเกลาและขึ้นระบบ
 
-รายละเอียดทุก task: ดู [PLAN.md](PLAN.md)
+## ยังไม่ทำ (เฟสถัดไป)
+คูปอง · รีวิวสินค้า · สมัครรับดอกไม้รายสัปดาห์ · ส่งหลายผู้รับในออเดอร์เดียว · เชื่อมระบบขนส่ง/ไรเดอร์ · หลายภาษา

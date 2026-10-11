@@ -4,7 +4,7 @@ import Link from "next/link";
 import { Minus, Plus, X } from "lucide-react";
 import { ButtonLink } from "@/components/ui/Button";
 import { formatBaht } from "@/lib/money";
-import { FlowerArt } from "./FlowerArt";
+import Image from "next/image";
 import { lineTotal, useCart } from "./CartProvider";
 
 export function CartPageView() {
@@ -29,8 +29,8 @@ export function CartPageView() {
       <ul className="divide-y divide-[var(--line)] border-y border-[var(--line)]">
         {lines.map((l) => (
           <li key={l.key} className="flex gap-5 py-6">
-            <Link href={`/flowers/${l.slug}`} className="h-36 w-28 shrink-0 overflow-hidden">
-              <FlowerArt seed={l.slug} palette={l.palette} />
+            <Link href={`/flowers/${l.slug}`} className="relative h-36 w-28 shrink-0 overflow-hidden rounded-2xl">
+              <Image src={l.image} alt={l.name} fill sizes="120px" className="object-cover" />
             </Link>
             <div className="flex flex-1 flex-col">
               <div className="flex justify-between gap-4">
@@ -48,7 +48,7 @@ export function CartPageView() {
                 </button>
               </div>
               <div className="mt-auto flex items-center justify-between pt-4">
-                <div className="flex items-center border border-[var(--line)]">
+                <div className="flex items-center overflow-hidden rounded-full border border-[var(--line)]">
                   <button onClick={() => setQty(l.key, l.qty - 1)} aria-label="ลดจำนวน" className="p-2.5 hover:bg-paper-deep">
                     <Minus size={14} />
                   </button>
@@ -64,7 +64,7 @@ export function CartPageView() {
         ))}
       </ul>
 
-      <aside className="h-fit border border-[var(--line)] bg-snow/50 p-7 lg:sticky lg:top-28">
+      <aside className="h-fit border border-[var(--line)] rounded-3xl bg-snow/50 p-7 lg:sticky lg:top-28">
         <h2 className="display mb-6 text-3xl">สรุป</h2>
         <div className="flex justify-between text-sm">
           <span>ยอดรวมสินค้า</span>

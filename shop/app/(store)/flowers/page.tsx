@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { CatalogView } from "@/components/store/CatalogView";
+import { PageBanner } from "@/components/store/PageBanner";
 
 export const metadata: Metadata = { title: "ดอกไม้ทั้งหมด" };
 export const dynamic = "force-dynamic";
@@ -8,12 +9,7 @@ export default async function FlowersPage({ searchParams }: { searchParams: Prom
   const params = await searchParams;
   return (
     <>
-      <section className="on-dark bg-ink pb-16 pt-36 text-snow">
-        <div className="container-x">
-          <p className="eyebrow mb-4 text-[#e8a0b0]">Collection</p>
-          <h1 className="display text-6xl lg:text-8xl">ดอกไม้ทั้งหมด</h1>
-        </div>
-      </section>
+      <PageBanner eyebrow="คอลเลกชัน" title="ดอกไม้ทั้งหมด" sub="ช่อดอกไม้ กระเช้า แจกัน และดอกไม้แห้ง จัดด้วยมือทุกชิ้น" photo="tulips-market" />
       <CatalogView basePath="/flowers" params={params} />
     </>
   );

@@ -4,7 +4,7 @@ import Link from "next/link";
 import { AnimatePresence, motion } from "framer-motion";
 import { Minus, Plus, X } from "lucide-react";
 import { useEffect } from "react";
-import { FlowerArt } from "./FlowerArt";
+import Image from "next/image";
 import { lineTotal, useCart } from "./CartProvider";
 import { formatBaht } from "@/lib/money";
 import { ButtonLink } from "@/components/ui/Button";
@@ -68,9 +68,9 @@ export function CartDrawer() {
                       <Link
                         href={`/flowers/${l.slug}`}
                         onClick={() => setOpen(false)}
-                        className="h-28 w-[88px] shrink-0 overflow-hidden"
+                        className="relative h-28 w-[88px] shrink-0 overflow-hidden rounded-2xl"
                       >
-                        <FlowerArt seed={l.slug} palette={l.palette} />
+                        <Image src={l.image} alt={l.name} fill sizes="120px" className="object-cover" />
                       </Link>
                       <div className="flex flex-1 flex-col">
                         <div className="flex justify-between gap-2">
@@ -92,7 +92,7 @@ export function CartDrawer() {
                           </button>
                         </div>
                         <div className="mt-auto flex items-center justify-between pt-3">
-                          <div className="flex items-center border border-[var(--line)]">
+                          <div className="flex items-center overflow-hidden rounded-full border border-[var(--line)]">
                             <button onClick={() => setQty(l.key, l.qty - 1)} aria-label="ลดจำนวน" className="p-2 hover:bg-paper-deep">
                               <Minus size={14} />
                             </button>

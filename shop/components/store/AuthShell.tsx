@@ -1,7 +1,7 @@
 import Link from "next/link";
 
 export const authInput =
-  "w-full border border-[var(--line)] bg-snow/60 px-4 py-3 text-sm outline-none transition-colors focus:border-ink";
+  "w-full rounded-2xl border border-[var(--line)] bg-snow/60 px-4 py-3 text-sm outline-none transition-colors focus:border-ink";
 
 export function AuthShell({
   title,

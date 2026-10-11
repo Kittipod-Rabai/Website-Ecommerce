@@ -14,7 +14,7 @@ export type ProductCardData = {
   id: string;
   slug: string;
   name: string;
-  palette: string[];
+  image: string;
   fromPrice: number;
   category: string;
   bestseller: boolean;
@@ -25,7 +25,7 @@ export function toCard(p: ProductWithRels): ProductCardData {
     id: p.id,
     slug: p.slug,
     name: p.name,
-    palette: parseJson<string[]>(p.palette, []),
+    image: parseJson<string[]>(p.images, [])[0] ?? "/photos/rose-bouquet.jpg",
     fromPrice: Math.min(...p.variants.map((v) => v.priceSatang)),
     category: p.category.name,
     bestseller: p.bestseller,

@@ -1,25 +1,18 @@
 import type { Metadata } from "next";
-import { Cormorant_Garamond, IBM_Plex_Sans_Thai, Manrope, Noto_Serif_Thai } from "next/font/google";
+import { Noto_Sans_Thai, Prompt } from "next/font/google";
 import "./globals.css";
 import { CartProvider } from "@/components/store/CartProvider";
 import { CartDrawer } from "@/components/store/CartDrawer";
 
-const display = Cormorant_Garamond({
-  subsets: ["latin"],
+const display = Prompt({
+  subsets: ["thai", "latin"],
   weight: ["400", "500", "600"],
-  style: ["normal", "italic"],
   variable: "--f-display",
 });
-const displayTh = Noto_Serif_Thai({
-  subsets: ["thai"],
-  weight: ["400", "500", "600"],
-  variable: "--f-display-th",
-});
-const body = Manrope({ subsets: ["latin"], variable: "--f-body" });
-const bodyTh = IBM_Plex_Sans_Thai({
-  subsets: ["thai"],
+const body = Noto_Sans_Thai({
+  subsets: ["thai", "latin"],
   weight: ["300", "400", "500", "600"],
-  variable: "--f-body-th",
+  variable: "--f-body",
 });
 
 export const metadata: Metadata = {
@@ -29,7 +22,7 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="th" className={`${display.variable} ${displayTh.variable} ${body.variable} ${bodyTh.variable}`}>
+    <html lang="th" className={`${display.variable} ${body.variable}`}>
       <body>
         <CartProvider>
           {children}

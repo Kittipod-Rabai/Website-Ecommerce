@@ -17,7 +17,7 @@ export function ProductPurchase({
   variants,
   addOns,
 }: {
-  product: { slug: string; name: string; palette: string[] };
+  product: { slug: string; name: string; image: string };
   variants: V[];
   addOns: A[];
 }) {
@@ -37,7 +37,7 @@ export function ProductPurchase({
       name: product.name,
       label: variant.label,
       priceSatang: variant.priceSatang,
-      palette: product.palette,
+      image: product.image,
       addOns: chosen,
     });
     setAdded(true);
@@ -56,7 +56,7 @@ export function ProductPurchase({
               aria-checked={v.id === variantId}
               onClick={() => setVariantId(v.id)}
               className={cn(
-                "border px-3 py-4 text-left transition-colors",
+                "rounded-2xl border px-3 py-4 text-left transition-colors",
                 v.id === variantId ? "border-ink bg-ink text-snow" : "border-[var(--line)] hover:border-ink",
               )}
             >

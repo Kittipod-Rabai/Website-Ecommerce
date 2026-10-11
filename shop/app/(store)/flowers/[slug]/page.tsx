@@ -4,7 +4,7 @@ import { notFound } from "next/navigation";
 import { db } from "@/lib/db";
 import { getProduct, listProducts } from "@/lib/catalog";
 import { parseJson } from "@/lib/utils";
-import { FlowerArt } from "@/components/store/FlowerArt";
+import Image from "next/image";
 import { ProductPurchase } from "@/components/store/ProductPurchase";
 import { ProductCard } from "@/components/store/ProductCard";
 import { formatBaht } from "@/lib/money";
@@ -26,7 +26,8 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
     db.addOn.findMany({ where: { active: true } }),
     listProducts({ category: product.category.slug }),
   ]);
-  const palette = parseJson<string[]>(product.palette, []);
+  const photos = parseJson<string[]>(product.images, []);
+  const mainPhoto = photos[0] ?? "/photos/rose-bouquet.jpg";
   const flowers = parseJson<string[]>(product.flowerTypes, []);
   const more = related.filter((r) => r.slug !== product.slug).slice(0, 4);
 
@@ -56,15 +57,14 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
 
         <div className="grid gap-12 lg:grid-cols-[1.15fr_1fr] lg:gap-20">
           <div className="grid gap-4 md:grid-cols-2">
-            <div className="aspect-[4/5] overflow-hidden md:col-span-2 md:aspect-square">
-              <FlowerArt seed={product.slug} palette={palette} />
+            <div className="relative aspect-[4/5] overflow-hidden rounded-3xl bg-paper-deep md:col-span-2 md:aspect-square">
+              <Image src={mainPhoto} alt={product.name} fill priority sizes="(min-width:1024px) 55vw, 100vw" className="object-cover" />
             </div>
-            <div className="aspect-[4/5] overflow-hidden">
-              <FlowerArt seed={product.slug + "-b"} palette={palette} tone="dark" />
-            </div>
-            <div className="aspect-[4/5] overflow-hidden">
-              <FlowerArt seed={product.slug + "-c"} palette={[...palette].reverse()} />
-            </div>
+            {photos.slice(1, 3).map((src, i) => (
+              <div key={src} className="relative aspect-[4/5] overflow-hidden rounded-3xl bg-paper-deep">
+                <Image src={src} alt={`${product.name} รูปที่ ${i + 2}`} fill sizes="(min-width:1024px) 27vw, 50vw" className="object-cover" />
+              </div>
+            ))}
           </div>
 
           <div className="lg:sticky lg:top-28 lg:self-start">
@@ -93,7 +93,7 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
 
             <div className="mt-9">
               <ProductPurchase
-                product={{ slug: product.slug, name: product.name, palette }}
+                product={{ slug: product.slug, name: product.name, image: mainPhoto }}
                 variants={product.variants.map((v) => ({ id: v.id, label: v.label, priceSatang: v.priceSatang }))}
                 addOns={addOns.map((a) => ({ id: a.id, name: a.name, priceSatang: a.priceSatang }))}
               />

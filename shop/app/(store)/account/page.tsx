@@ -85,7 +85,7 @@ export default async function AccountPage() {
         <section>
           <h2 className="display mb-6 text-3xl">ประวัติออเดอร์</h2>
           {orders.length === 0 ? (
-            <p className="border border-dashed border-[var(--line)] px-6 py-12 text-center text-sm text-muted">
+            <p className="rounded-2xl border border-dashed border-[var(--line)] px-6 py-12 text-center text-sm text-muted">
               ยังไม่มีออเดอร์ <Link href="/flowers" className="underline underline-offset-4">เลือกช่อดอกไม้</Link>
             </p>
           ) : (
