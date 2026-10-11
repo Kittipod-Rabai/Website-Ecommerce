@@ -6,7 +6,10 @@
     "dev": "next dev --turbopack",
     "build": "next build --turbopack",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "db:seed": "tsx prisma/seed.ts"
   },
   "dependencies": {
     "@prisma/client": "^6.19.3",
@@ -38,4 +41,5 @@
     "typescript": "^5",
     "vitest": "^3.2.7"
   }
+  ,"prisma": { "seed": "tsx prisma/seed.ts" }
 }
