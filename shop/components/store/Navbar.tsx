@@ -58,7 +58,7 @@ export function Navbar({
           <button className="lg:hidden" aria-label="เมนู" onClick={() => setMobile((v) => !v)}>
             {mobile ? <X size={24} /> : <Menu size={24} />}
           </button>
-          <nav className="hidden items-center gap-8 text-[0.78rem] font-semibold uppercase tracking-[0.16em] lg:flex" aria-label="เมนูหลัก">
+          <nav className="hidden items-center gap-8 whitespace-nowrap text-[0.78rem] font-semibold uppercase tracking-[0.16em] lg:flex" aria-label="เมนูหลัก">
             <button
               className={cn("py-6 transition-opacity", mega ? "opacity-100" : "opacity-90 hover:opacity-100")}
               onMouseEnter={() => setMega(true)}

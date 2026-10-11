@@ -8,18 +8,18 @@ const display = Cormorant_Garamond({
   subsets: ["latin"],
   weight: ["400", "500", "600"],
   style: ["normal", "italic"],
-  variable: "--font-display",
+  variable: "--f-display",
 });
 const displayTh = Noto_Serif_Thai({
   subsets: ["thai"],
   weight: ["400", "500", "600"],
-  variable: "--font-display-th",
+  variable: "--f-display-th",
 });
-const body = Manrope({ subsets: ["latin"], variable: "--font-body" });
+const body = Manrope({ subsets: ["latin"], variable: "--f-body" });
 const bodyTh = IBM_Plex_Sans_Thai({
   subsets: ["thai"],
   weight: ["300", "400", "500", "600"],
-  variable: "--font-body-th",
+  variable: "--f-body-th",
 });
 
 export const metadata: Metadata = {

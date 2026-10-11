@@ -56,7 +56,7 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
 
         <div className="grid gap-12 lg:grid-cols-[1.15fr_1fr] lg:gap-20">
           <div className="grid gap-4 md:grid-cols-2">
-            <div className="aspect-[4/5] overflow-hidden md:col-span-2 md:aspect-[5/4]">
+            <div className="aspect-[4/5] overflow-hidden md:col-span-2 md:aspect-square">
               <FlowerArt seed={product.slug} palette={palette} />
             </div>
             <div className="aspect-[4/5] overflow-hidden">
