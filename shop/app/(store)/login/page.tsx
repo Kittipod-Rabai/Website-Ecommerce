@@ -5,6 +5,7 @@ import { auth, signIn } from "@/auth";
 import { AuthShell, authInput } from "@/components/store/AuthShell";
 import { Button } from "@/components/ui/Button";
 import { rateLimit } from "@/lib/rate-limit";
+import { db } from "@/lib/db";
 
 export const metadata: Metadata = { title: "เข้าสู่ระบบ" };
 export const dynamic = "force-dynamic";
@@ -15,7 +16,8 @@ const safeNext = (n?: string) => (n && n.startsWith("/") && !n.startsWith("//") 
 export default async function LoginPage({ searchParams }: { searchParams: Promise<{ next?: string; error?: string; registered?: string }> }) {
   const sp = await searchParams;
   const session = await auth();
-  if (session?.user) redirect(safeNext(sp.next));
+  // ถ้า session ค้างแต่ผู้ใช้ถูกลบไปแล้ว ให้แสดงฟอร์มล็อกอินตามปกติ
+  if (session?.user && (await db.user.findUnique({ where: { id: session.user.id }, select: { id: true } }))) redirect(safeNext(sp.next));
 
   async function login(formData: FormData) {
     "use server";
