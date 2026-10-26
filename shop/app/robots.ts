@@ -1,6 +1,6 @@
 import type { MetadataRoute } from "next";
 
-const base = process.env.AUTH_URL ?? "http://localhost:3000";
+const base = process.env.AUTH_URL ?? process.env.RENDER_EXTERNAL_URL ?? "http://localhost:3000";
 
 export default function robots(): MetadataRoute.Robots {
   return {

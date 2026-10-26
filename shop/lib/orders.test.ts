@@ -22,6 +22,21 @@ const input = (n: number): PlaceOrderInput => ({
 });
 
 beforeAll(async () => {
+  // เคลียร์ทุกตารางก่อนเริ่ม (ตามลำดับที่ไม่ชนกับ foreign key) — ให้รันซ้ำได้ทั้งบน SQLite และ PostgreSQL
+  await db.orderItem.deleteMany();
+  await db.order.deleteMany();
+  await db.cartItem.deleteMany();
+  await db.cart.deleteMany();
+  await db.productOccasion.deleteMany();
+  await db.variant.deleteMany();
+  await db.product.deleteMany();
+  await db.occasion.deleteMany();
+  await db.category.deleteMany();
+  await db.addOn.deleteMany();
+  await db.deliveryZone.deleteMany();
+  await db.deliverySlot.deleteMany();
+  await db.dailyCapacity.deleteMany();
+  await db.setting.deleteMany();
   await db.setting.create({ data: { key: "defaultDailyCapacity", value: "30" } });
   await db.deliveryZone.create({ data: { name: "BKK", postcodes: JSON.stringify(["10"]), feeSatang: 10000, sameDayCutoff: "14:00" } });
   slotId = (await db.deliverySlot.create({ data: { label: "09:00 – 12:00", startTime: "09:00", endTime: "12:00" } })).id;

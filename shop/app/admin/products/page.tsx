@@ -1,3 +1,4 @@
+import { contains } from "@/lib/db-flavor";
 import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
@@ -14,7 +15,7 @@ export default async function AdminProducts({ searchParams }: { searchParams: Pr
   const sp = await searchParams;
   const q = sp.q?.trim();
   const products = await db.product.findMany({
-    where: q ? { OR: [{ name: { contains: q } }, { slug: { contains: q.toLowerCase() } }] } : undefined,
+    where: q ? { OR: [{ name: contains(q) }, { slug: contains(q) }] } : undefined,
     include: { category: true, variants: { orderBy: { priceSatang: "asc" } } },
     orderBy: { createdAt: "desc" },
   });

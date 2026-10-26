@@ -1,8 +1,7 @@
 import { randomBytes } from "node:crypto";
-import { mkdir, writeFile } from "node:fs/promises";
-import path from "node:path";
 import { z } from "zod";
 import { db } from "@/lib/db";
+import { CLOUDINARY_HOST, saveImage } from "@/lib/storage";
 
 export const COLOR_TAGS = [
   { value: "red", label: "แดง" },
@@ -15,9 +14,6 @@ export const COLOR_TAGS = [
 ];
 
 export const SIZES = ["S", "M", "L"] as const;
-
-const MAX_UPLOAD = 4 * 1024 * 1024;
-const ALLOWED_EXT: Record<string, string> = { "image/jpeg": "jpg", "image/png": "png", "image/webp": "webp" };
 
 export function slugify(input: string) {
   return input
@@ -36,18 +32,6 @@ async function uniqueSlug(base: string, ignoreId?: string) {
     if (!clash || clash.id === ignoreId) return slug;
     slug = `${root}-${i}`;
   }
-}
-
-/** Save an uploaded image under /public/uploads and return its public path. */
-async function saveUpload(file: File): Promise<string> {
-  const ext = ALLOWED_EXT[file.type];
-  if (!ext) throw new Error("รองรับเฉพาะไฟล์ JPG, PNG หรือ WEBP");
-  if (file.size > MAX_UPLOAD) throw new Error("ไฟล์ใหญ่เกิน 4MB");
-  const dir = path.join(process.cwd(), "public", "uploads");
-  await mkdir(dir, { recursive: true });
-  const name = `${randomBytes(8).toString("hex")}.${ext}`;
-  await writeFile(path.join(dir, name), Buffer.from(await file.arrayBuffer()));
-  return `/uploads/${name}`;
 }
 
 const priceField = z.preprocess(
@@ -88,10 +72,10 @@ export async function saveProduct(formData: FormData, id: string | null): Promis
   const photos = d.photos
     .split("\n")
     .map((s) => s.trim())
-    .filter((s) => s.startsWith("/photos/") || s.startsWith("/uploads/"));
+    .filter((s) => s.startsWith("/photos/") || s.startsWith("/uploads/") || s.startsWith(CLOUDINARY_HOST));
   try {
     for (const f of formData.getAll("files")) {
-      if (f instanceof File && f.size > 0) photos.push(await saveUpload(f));
+      if (f instanceof File && f.size > 0) photos.push(await saveImage(f));
     }
   } catch (e) {
     return { ok: false, error: e instanceof Error ? e.message : "อัปโหลดรูปไม่สำเร็จ" };

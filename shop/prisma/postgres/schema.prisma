@@ -1,0 +1,195 @@
+// ไฟล์นี้สร้างอัตโนมัติจาก prisma/schema.prisma ด้วย `npm run db:pg` — ห้ามแก้ด้วยมือ
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  CUSTOMER
+  ADMIN
+}
+
+enum OrderStatus {
+  PENDING_PAYMENT
+  PAID
+  PREPARING
+  OUT_FOR_DELIVERY
+  DELIVERED
+  CANCELLED
+  REFUNDED
+}
+
+model User {
+  id           String         @id @default(cuid())
+  email        String         @unique
+  name         String?
+  passwordHash String?
+  role         Role           @default(CUSTOMER)
+  createdAt    DateTime       @default(now())
+  addresses    SavedAddress[]
+  orders       Order[]
+  carts        Cart[]
+}
+
+model SavedAddress {
+  id            String @id @default(cuid())
+  userId        String
+  user          User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  recipientName String
+  phone         String
+  line1         String
+  district      String
+  province      String
+  postcode      String
+}
+
+model Occasion {
+  id       String            @id @default(cuid())
+  name     String
+  slug     String            @unique
+  tagline  String            @default("")
+  hue      Int               @default(340)
+  products ProductOccasion[]
+}
+
+model Category {
+  id       String    @id @default(cuid())
+  name     String
+  slug     String    @unique
+  products Product[]
+}
+
+model Product {
+  id          String            @id @default(cuid())
+  name        String
+  slug        String            @unique
+  description String
+  categoryId  String
+  category    Category          @relation(fields: [categoryId], references: [id])
+  // Placeholder art parameters (colors as hex list); real photos go in `images`.
+  palette     String            @default("[]") // JSON string[]
+  images      String            @default("[]") // JSON string[]
+  flowerTypes String            @default("[]") // JSON string[]
+  colorTag    String            @default("pink")
+  bestseller  Boolean           @default(false)
+  active      Boolean           @default(true)
+  createdAt   DateTime          @default(now())
+  variants    Variant[]
+  occasions   ProductOccasion[]
+}
+
+model ProductOccasion {
+  productId  String
+  occasionId String
+  product    Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  occasion   Occasion @relation(fields: [occasionId], references: [id], onDelete: Cascade)
+
+  @@id([productId, occasionId])
+}
+
+model Variant {
+  id            String      @id @default(cuid())
+  productId     String
+  product       Product     @relation(fields: [productId], references: [id], onDelete: Cascade)
+  label         String // S / M / L
+  priceSatang   Int
+  leadTimeHours Int         @default(4)
+  cartItems     CartItem[]
+  orderItems    OrderItem[]
+}
+
+model AddOn {
+  id          String @id @default(cuid())
+  name        String
+  priceSatang Int
+  hue         Int    @default(30)
+  active      Boolean @default(true)
+}
+
+model DeliveryZone {
+  id            String @id @default(cuid())
+  name          String
+  postcodes     String // JSON string[] ; "*" = fallback
+  feeSatang     Int
+  sameDayCutoff String @default("14:00") // HH:mm Asia/Bangkok
+}
+
+model DeliverySlot {
+  id        String  @id @default(cuid())
+  label     String
+  startTime String // HH:mm
+  endTime   String
+  orders    Order[]
+}
+
+model DailyCapacity {
+  date       String @id // YYYY-MM-DD
+  maxOrders  Int
+  usedOrders Int    @default(0)
+  closed     Boolean @default(false)
+}
+
+model Setting {
+  key   String @id
+  value String
+}
+
+model Cart {
+  id        String     @id @default(cuid())
+  userId    String?
+  user      User?      @relation(fields: [userId], references: [id], onDelete: SetNull)
+  createdAt DateTime   @default(now())
+  items     CartItem[]
+}
+
+model CartItem {
+  id        String  @id @default(cuid())
+  cartId    String
+  cart      Cart    @relation(fields: [cartId], references: [id], onDelete: Cascade)
+  variantId String
+  variant   Variant @relation(fields: [variantId], references: [id], onDelete: Cascade)
+  qty       Int     @default(1)
+  addOnIds  String  @default("[]") // JSON string[]
+}
+
+model Order {
+  id              String       @id @default(cuid())
+  number          String       @unique
+  userId          String?
+  user            User?        @relation(fields: [userId], references: [id], onDelete: SetNull)
+  buyerEmail      String
+  buyerPhone      String
+  status          OrderStatus  @default(PENDING_PAYMENT)
+  subtotal        Int
+  deliveryFee     Int
+  total           Int
+  recipientName   String
+  recipientPhone  String
+  deliveryAddress String // JSON
+  deliveryDate    String // YYYY-MM-DD
+  deliverySlotId  String
+  deliverySlot    DeliverySlot @relation(fields: [deliverySlotId], references: [id])
+  giftMessage     String       @default("")
+  senderName      String       @default("")
+  anonymous       Boolean      @default(false)
+  paymentIntentId String?
+  trackingNote    String       @default("")
+  createdAt       DateTime     @default(now())
+  items           OrderItem[]
+}
+
+model OrderItem {
+  id            String  @id @default(cuid())
+  orderId       String
+  order         Order   @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  variantId     String?
+  variant       Variant? @relation(fields: [variantId], references: [id], onDelete: SetNull)
+  nameSnapshot  String
+  priceSnapshot Int
+  qty           Int
+  addOns        String  @default("[]") // JSON [{name, priceSatang}]
+}

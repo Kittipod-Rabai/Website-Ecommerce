@@ -2,7 +2,7 @@
 
 เว็บอีคอมเมิร์ซร้านดอกไม้ ดีไซน์แนว premium minimal เลือกวัน-เวลาจัดส่งได้ มีตะกร้า ชำระเงิน และแดชบอร์ดฝั่งผู้ขาย
 
-**เทคโนโลยี:** Next.js 15 · TypeScript · Tailwind CSS 4 · Prisma · SQLite (ตอนพัฒนา) · Auth.js · Stripe
+**เทคโนโลยี:** Next.js 15 · TypeScript · Tailwind CSS 4 · Prisma · SQLite (เครื่องพัฒนา) / PostgreSQL (Render) · Auth.js · Stripe · Cloudinary
 
 ## วิธีรันบนเครื่องใหม่ (ทำครั้งเดียว)
 
@@ -74,9 +74,50 @@ npm run dev
 - **ข้อมูลเพี้ยน อยากเริ่มใหม่:** `npm run db:reset` แล้ว `npm run db:seed`
 - **หน้าเว็บขึ้น error เรื่อง Prisma:** รัน `npx prisma generate`
 
-## ขึ้นใช้งานจริง
+## Deploy ขึ้น Render (เว็บจริง)
 
-ฐานข้อมูลตอนพัฒนาเป็น SQLite ก่อนขึ้นจริงให้เปลี่ยนเป็น PostgreSQL: แก้ `provider` ใน `shop/prisma/schema.prisma` เป็น `"postgresql"` ตั้ง `DATABASE_URL` เป็น Postgres แล้วรัน `npx prisma migrate deploy` (แนะนำ Vercel + Neon) และต้องตั้งค่า `AUTH_SECRET` ใหม่ รวมถึงคีย์ Stripe ของจริง
+ระบบเตรียมไว้ให้แล้ว: ไฟล์ [`render.yaml`](render.yaml) สร้างทั้งเว็บและฐานข้อมูล PostgreSQL ให้ในคลิกเดียว รูปสินค้าที่แอดมินอัปโหลดเก็บบน Cloudinary
+
+### เตรียมก่อน (ทำครั้งเดียว)
+1. **Cloudinary** (เก็บรูป): สมัครฟรีที่ <https://cloudinary.com> → เข้า Dashboard → ส่วน *API Keys* คัดลอกค่า **API Environment variable** หน้าตาแบบ `cloudinary://123456:abcdEF@your-cloud-name`
+2. **GitHub:** push โค้ดขึ้น repo ของคุณ (Render ดึงโค้ดจากที่นี่)
+3. **Render:** สมัครที่ <https://render.com> แล้วเชื่อมบัญชี GitHub
+
+### สร้างเว็บ
+1. ใน Render กด **New → Blueprint** แล้วเลือก repo นี้ Render จะอ่าน `render.yaml` ให้เอง
+2. กรอกค่าที่ระบบถาม (ค่าเหล่านี้ไม่ถูกเก็บใน Git):
+
+| ตัวแปร | ใส่อะไร |
+|---|---|
+| `ADMIN_EMAIL` | อีเมลของเจ้าของร้าน (ใช้ล็อกอินแอดมิน) |
+| `ADMIN_PASSWORD` | รหัสผ่านแอดมินคนแรก **อย่างน้อย 10 ตัวอักษร** ตั้งให้เดายาก |
+| `CLOUDINARY_URL` | ค่าที่คัดลอกจาก Cloudinary |
+| `STRIPE_SECRET_KEY`, `STRIPE_WEBHOOK_SECRET` | เว้นว่างได้ (ดูหัวข้อ Stripe ด้านล่าง) |
+
+3. กด **Apply** รอสักครู่ (build ครั้งแรกราว 3–6 นาที) ตอน build ระบบจะสร้างตาราง ใส่ข้อมูลร้านตั้งต้น (สินค้า 20 ช่อ โอกาส โซนจัดส่ง) และสร้างบัญชีแอดมินจากค่าที่กรอกให้อัตโนมัติ
+4. เปิดลิงก์ที่ Render ให้ (เช่น `https://maison-fleur.onrender.com`) แล้วล็อกอินที่ `/login` ด้วยอีเมลและรหัสผ่านแอดมินที่ตั้งไว้ → เข้า `/admin`
+
+หลัง deploy สำเร็จ แนะนำให้ลบตัวแปร `ADMIN_PASSWORD` ออกจากหน้า Environment ของ Render (ใช้แค่ครั้งแรก) และเข้าเมนู "บัญชีแอดมิน" เพื่อเปลี่ยนรหัสผ่านเป็นของตัวเอง
+
+> **ไม่ต้องตั้ง `AUTH_URL`** บน Render (ระบบใช้โดเมนของเว็บเอง) ตั้งเฉพาะเมื่อผูกโดเมนของตัวเอง
+
+### การชำระเงินบนเว็บจริง
+- **โหมดสาธิต (ค่าเริ่มต้น):** ใช้หน้า "จำลองชำระเงิน" ไม่หักเงินจริง เหมาะกับโปรเจกต์ศึกษาและโชว์งาน (ควบคุมด้วย `ALLOW_MOCK_PAYMENT=true` ใน `render.yaml`)
+- **Stripe โหมดทดสอบ:** สมัคร Stripe → เอา Secret key (`sk_test_...`) ใส่ `STRIPE_SECRET_KEY` → สร้าง Webhook endpoint ชี้ไปที่ `https://<โดเมนของคุณ>/api/webhooks/stripe` เลือก events `checkout.session.completed`, `checkout.session.async_payment_succeeded`, `checkout.session.async_payment_failed`, `checkout.session.expired` → เอา Signing secret (`whsec_...`) ใส่ `STRIPE_WEBHOOK_SECRET` เมื่อมีคีย์ Stripe หน้าจำลองจะปิดเองอัตโนมัติ (ควรลบ `ALLOW_MOCK_PAYMENT` ด้วย) ทดสอบจ่ายด้วยบัตรทดสอบ `4242 4242 4242 4242`
+
+### ข้อจำกัดของแพ็กเกจฟรี (ตรวจเงื่อนไขล่าสุดที่หน้า Pricing ของ Render)
+- เว็บฟรีจะ "หลับ" เมื่อไม่มีคนใช้สักพัก คนแรกที่เข้าจะรอประมาณ 30–60 วินาที
+- ฐานข้อมูล Postgres แพ็กเกจฟรีมีอายุจำกัดและถูกลบเมื่อหมดอายุ ถ้าจะใช้จริงจังให้อัปเกรดเป็นแพ็กเกจเสียเงิน
+- ดิสก์ของเว็บบน Render ไม่ถาวร จึงไม่เก็บรูปบนเครื่อง (ใช้ Cloudinary แล้ว) และตัวกันยิงล็อกอินรัวๆ เก็บในหน่วยความจำ ใช้ได้กับเว็บเครื่องเดียว
+
+### เมื่อแก้โครงสร้างฐานข้อมูล (สำหรับคนพัฒนาต่อ)
+แก้ `shop/prisma/schema.prisma` แล้วสร้าง migration ของทั้งสองฐานข้อมูล:
+```bash
+cd shop
+npx prisma migrate dev --name ชื่อการเปลี่ยนแปลง   # SQLite (เครื่องพัฒนา)
+npm run db:pg -- ชื่อการเปลี่ยนแปลง                # PostgreSQL (Render) — commit โฟลเดอร์ prisma/postgres ด้วย
+```
+Render จะ migrate ให้เองทุกครั้งที่ deploy ทดสอบกับ Postgres จริงได้ด้วย `TEST_DATABASE_URL="postgresql://..." npm test` (ใช้ฐานข้อมูลที่สร้างไว้ทดสอบโดยเฉพาะ เพราะเทสต์จะลบข้อมูลในตาราง)
 
 ## โครงสร้างโปรเจกต์
 

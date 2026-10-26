@@ -1,3 +1,4 @@
+import { contains } from "@/lib/db-flavor";
 import { Prisma } from "@prisma/client";
 import { db } from "@/lib/db";
 import { parseJson } from "@/lib/utils";
@@ -48,7 +49,7 @@ export async function listProducts(f: CatalogFilter = {}): Promise<ProductCardDa
   if (f.occasion) where.occasions = { some: { occasion: { slug: f.occasion } } };
   if (f.color) where.colorTag = f.color;
   if (f.q) {
-    where.OR = [{ name: { contains: f.q } }, { flowerTypes: { contains: f.q } }, { description: { contains: f.q } }];
+    where.OR = [{ name: contains(f.q) }, { flowerTypes: contains(f.q) }, { description: contains(f.q) }];
   }
   const rows = await db.product.findMany({ where, include: productInclude, orderBy: { createdAt: "desc" } });
   let cards = rows.map(toCard);

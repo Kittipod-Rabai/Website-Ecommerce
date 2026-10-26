@@ -1,3 +1,4 @@
+import { contains } from "@/lib/db-flavor";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { db } from "@/lib/db";
@@ -25,10 +26,10 @@ export default async function AdminOrders({
     ...(q
       ? {
           OR: [
-            { number: { contains: q.toUpperCase() } },
-            { recipientName: { contains: q } },
-            { buyerEmail: { contains: q.toLowerCase() } },
-            { buyerPhone: { contains: q } },
+            { number: contains(q) },
+            { recipientName: contains(q) },
+            { buyerEmail: contains(q) },
+            { buyerPhone: contains(q) },
           ],
         }
       : {}),

@@ -1,4 +1,5 @@
 import { randomBytes } from "node:crypto";
+import { Prisma } from "@prisma/client";
 import { db } from "@/lib/db";
 import { parseJson } from "@/lib/utils";
 import {
@@ -112,6 +113,19 @@ export async function expireStaleOrders(now = new Date()) {
   }
 }
 
+/**
+ * สร้างแถวคิวของวันนั้นถ้ายังไม่มี ทำนอกทรานแซกชัน และกลืน error กรณีมีคนสร้างพร้อมกัน
+ * (บน PostgreSQL คำสั่งที่ error ในทรานแซกชันจะทำให้ทั้งทรานแซกชันใช้ต่อไม่ได้)
+ */
+async function ensureCapacityRow(date: string, maxOrders: number) {
+  if (await db.dailyCapacity.findUnique({ where: { date } })) return;
+  try {
+    await db.dailyCapacity.create({ data: { date, maxOrders, usedOrders: 0 } });
+  } catch (e) {
+    if (!(e instanceof Prisma.PrismaClientKnownRequestError && e.code === "P2002")) throw e;
+  }
+}
+
 export async function placeOrder(input: PlaceOrderInput, now = new Date()) {
   await expireStaleOrders(now);
   const [{ zones, slots, capacities }, settings, priced] = await Promise.all([
@@ -140,11 +154,9 @@ export async function placeOrder(input: PlaceOrderInput, now = new Date()) {
 
   // Reserve one delivery-capacity unit atomically. Two concurrent checkouts can
   // never push usedOrders above maxOrders.
+  await ensureCapacityRow(input.deliveryDate, settings.defaultCapacity);
   return db.$transaction(async (tx) => {
     const cap = await tx.dailyCapacity.findUnique({ where: { date: input.deliveryDate } });
-    if (!cap) {
-      await tx.dailyCapacity.create({ data: { date: input.deliveryDate, maxOrders: settings.defaultCapacity, usedOrders: 0 } });
-    }
     const max = cap?.maxOrders ?? settings.defaultCapacity;
     const reserved = await tx.dailyCapacity.updateMany({
       where: { date: input.deliveryDate, closed: false, usedOrders: { lt: max } },

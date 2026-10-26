@@ -9,7 +9,7 @@ export function getStripe(): Stripe | null {
   return stripe;
 }
 
-export const siteUrl = () => process.env.AUTH_URL ?? "http://localhost:3000";
+export const siteUrl = () => process.env.AUTH_URL ?? process.env.RENDER_EXTERNAL_URL ?? "http://localhost:3000";
 
 /**
  * Returns the URL the customer should be sent to in order to pay.

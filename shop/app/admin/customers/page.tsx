@@ -1,3 +1,4 @@
+import { contains } from "@/lib/db-flavor";
 import type { Metadata } from "next";
 import { db } from "@/lib/db";
 import { formatBaht } from "@/lib/money";
@@ -10,7 +11,7 @@ export default async function AdminCustomers({ searchParams }: { searchParams: P
   const { q } = await searchParams;
   const term = q?.trim();
   const users = await db.user.findMany({
-    where: { role: "CUSTOMER", ...(term ? { OR: [{ email: { contains: term.toLowerCase() } }, { name: { contains: term } }] } : {}) },
+    where: { role: "CUSTOMER", ...(term ? { OR: [{ email: contains(term) }, { name: contains(term) }] } : {}) },
     orderBy: { createdAt: "desc" },
     take: 200,
     include: { orders: { where: { status: { in: [...REVENUE_STATUSES] } }, select: { total: true } } },

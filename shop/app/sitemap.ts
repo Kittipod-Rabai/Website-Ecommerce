@@ -3,7 +3,7 @@ import { db } from "@/lib/db";
 
 export const dynamic = "force-dynamic";
 
-const base = process.env.AUTH_URL ?? "http://localhost:3000";
+const base = process.env.AUTH_URL ?? process.env.RENDER_EXTERNAL_URL ?? "http://localhost:3000";
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const [products, occasions] = await Promise.all([

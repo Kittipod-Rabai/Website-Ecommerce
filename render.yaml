@@ -1,0 +1,44 @@
+# Render Blueprint — สร้างเว็บ + ฐานข้อมูล PostgreSQL ในคลิกเดียว (ดูขั้นตอนใน README.md)
+databases:
+  - name: maison-fleur-db
+    region: singapore
+    plan: free
+    databaseName: maisonfleur
+    user: maisonfleur
+
+services:
+  - type: web
+    name: maison-fleur
+    runtime: node
+    region: singapore
+    plan: free
+    rootDir: shop
+    # ติดตั้ง (รวม devDependencies) → สร้าง Prisma client → migrate → ใส่ข้อมูลตั้งต้น → build
+    buildCommand: npm ci --include=dev && npm run build:render
+    startCommand: npm start
+    healthCheckPath: /robots.txt
+    envVars:
+      - key: NODE_VERSION
+        value: "22"
+      - key: DATABASE_URL
+        fromDatabase:
+          name: maison-fleur-db
+          property: connectionString
+      - key: AUTH_SECRET
+        generateValue: true
+      # โหมดสาธิต: ใช้หน้า "จำลองชำระเงิน" แทน Stripe (ไม่หักเงินจริง)
+      # เมื่อใส่คีย์ Stripe แล้ว หน้านี้จะถูกปิดเองอัตโนมัติ (แนะนำให้ลบตัวแปรนี้ด้วย)
+      - key: ALLOW_MOCK_PAYMENT
+        value: "true"
+      # ต้องกรอกเองตอนสร้างบน Render (ไม่เก็บใน Git)
+      - key: ADMIN_EMAIL
+        sync: false
+      - key: ADMIN_PASSWORD
+        sync: false
+      - key: CLOUDINARY_URL
+        sync: false
+      # ไม่บังคับ: ใส่เมื่อจะใช้ Stripe (โหมดทดสอบ) แทนหน้าจ่ายเงินจำลอง
+      - key: STRIPE_SECRET_KEY
+        sync: false
+      - key: STRIPE_WEBHOOK_SECRET
+        sync: false
