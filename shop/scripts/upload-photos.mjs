@@ -11,11 +11,15 @@ const FOLDER = "maison-fleur/seed";
 const DIR = "public/photos";
 const dry = process.argv.includes("--dry");
 
+function normalizeCloudinaryUrl(v) {
+  return (v ?? "").trim().replace(/^["']|["']$/g, "").replace(/^CLOUDINARY_URL=/i, "").replace(/[<>]/g, "").trim();
+}
+
 function readCloudinaryUrl() {
-  if (process.env.CLOUDINARY_URL) return process.env.CLOUDINARY_URL;
+  if (process.env.CLOUDINARY_URL) return normalizeCloudinaryUrl(process.env.CLOUDINARY_URL);
   if (existsSync(".env")) {
-    const m = readFileSync(".env", "utf8").match(/^CLOUDINARY_URL=["']?([^"'\r\n]+)["']?/m);
-    if (m) return m[1];
+    const m = readFileSync(".env", "utf8").match(/^CLOUDINARY_URL=(.*)$/m);
+    if (m) return normalizeCloudinaryUrl(m[1]);
   }
   return "";
 }
@@ -52,7 +56,17 @@ for (const file of files) {
   body.set("signature", signature);
   try {
     const res = await fetch(`https://api.cloudinary.com/v1_1/${cloudName}/image/upload`, { method: "POST", body });
-    if (!res.ok) throw new Error(`${res.status} ${(await res.text()).slice(0, 120)}`);
+    if (!res.ok) {
+      const text = await res.text();
+      if (res.status === 403 && /missing permissions/i.test(text)) {
+        console.error("
+✘ API key นี้ไม่มีสิทธิ์อัปโหลด (create)
+  แก้: Cloudinary Console → Settings → API Keys → ใช้ key ที่มีสิทธิ์ครบ (Root/Full access)
+  หรือสร้าง key ใหม่ที่ติ๊กสิทธิ์ upload/create แล้วอัปเดต CLOUDINARY_URL ใน .env");
+        process.exit(1);
+      }
+      throw new Error(`${res.status} ${text.slice(0, 120)}`);
+    }
     ok++;
     console.log(`  ✔ ${file}`);
   } catch (e) {
