@@ -22,4 +22,4 @@ export const PRODUCT_PHOTOS: Record<string, string[]> = {
   "mille-fleurs": ["rose-bouquet", "sunflower-mix", "wild-bouquet"],
 };
 
-export const photoUrl = (name: string) => `/photos/${name}.jpg`;
+export { photo as photoUrl } from "../lib/photos";

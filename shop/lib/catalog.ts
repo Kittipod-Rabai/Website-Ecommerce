@@ -1,3 +1,4 @@
+import { photo } from "@/lib/photos";
 import { contains } from "@/lib/db-flavor";
 import { Prisma } from "@prisma/client";
 import { db } from "@/lib/db";
@@ -26,7 +27,7 @@ export function toCard(p: ProductWithRels): ProductCardData {
     id: p.id,
     slug: p.slug,
     name: p.name,
-    image: parseJson<string[]>(p.images, [])[0] ?? "/photos/rose-bouquet.jpg",
+    image: parseJson<string[]>(p.images, [])[0] ?? photo("rose-bouquet"),
     fromPrice: Math.min(...p.variants.map((v) => v.priceSatang)),
     category: p.category.name,
     bestseller: p.bestseller,

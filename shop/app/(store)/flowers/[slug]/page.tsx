@@ -1,3 +1,4 @@
+import { photo } from "@/lib/photos";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
@@ -27,7 +28,7 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
     listProducts({ category: product.category.slug }),
   ]);
   const photos = parseJson<string[]>(product.images, []);
-  const mainPhoto = photos[0] ?? "/photos/rose-bouquet.jpg";
+  const mainPhoto = photos[0] ?? photo("rose-bouquet");
   const flowers = parseJson<string[]>(product.flowerTypes, []);
   const more = related.filter((r) => r.slug !== product.slug).slice(0, 4);
 

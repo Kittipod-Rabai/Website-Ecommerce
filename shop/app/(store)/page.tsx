@@ -1,3 +1,4 @@
+import { photo } from "@/lib/photos";
 import Image from "next/image";
 import Link from "next/link";
 import { ArrowUpRight, Check, Clock, Flower2, Gift, Star, Truck } from "lucide-react";
@@ -33,7 +34,7 @@ export default async function HomePage() {
       <section className="px-3 pt-3 sm:px-6 sm:pt-4">
         <div className="on-dark relative mx-auto max-w-[1320px] overflow-hidden rounded-[2rem] bg-forest-deep text-snow">
           <Image
-            src="/photos/flower-shop-xl.jpg"
+            src={photo("flower-shop-xl")}
             alt="ร้านดอกไม้สดหลากสี"
             fill
             priority
@@ -65,7 +66,7 @@ export default async function HomePage() {
           {/* floating cards */}
           <div className="absolute inset-x-4 bottom-4 hidden gap-4 sm:inset-x-8 sm:bottom-8 md:grid md:grid-cols-[1.1fr_1fr_0.8fr] lg:inset-x-12 lg:bottom-10">
             <div className="relative flex h-40 items-end overflow-hidden rounded-3xl">
-              <Image src="/photos/florist-arranging.jpg" alt="ฟลอริสต์กำลังจัดช่อ" fill sizes="400px" className="object-cover" />
+              <Image src={photo("florist-arranging")} alt="ฟลอริสต์กำลังจัดช่อ" fill sizes="400px" className="object-cover" />
               <div className="absolute inset-0 bg-gradient-to-t from-ink/70 to-transparent" />
               <p className="relative p-4 text-sm leading-snug text-white">จัดด้วยมือทุกช่อ ใส่ใจทุกรายละเอียด ตั้งแต่ดอกไม้จนถึงริบบิ้น</p>
             </div>
@@ -86,7 +87,7 @@ export default async function HomePage() {
               </div>
             </div>
             <div className="relative hidden h-40 overflow-hidden rounded-3xl lg:block">
-              <Image src="/photos/sunflower-wrap.jpg" alt="ช่อทานตะวัน" fill sizes="300px" className="object-cover" />
+              <Image src={photo("sunflower-wrap")} alt="ช่อทานตะวัน" fill sizes="300px" className="object-cover" />
             </div>
           </div>
         </div>
@@ -105,7 +106,7 @@ export default async function HomePage() {
           <Reveal>
             <div className="grid h-full overflow-hidden rounded-[2rem] bg-paper-deep md:grid-cols-2">
               <div className="relative min-h-72">
-                <Image src="/photos/florist-woman.jpg" alt="ฟลอริสต์ถือช่อดอกไม้" fill sizes="400px" className="object-cover" />
+                <Image src={photo("florist-woman")} alt="ฟลอริสต์ถือช่อดอกไม้" fill sizes="400px" className="object-cover" />
               </div>
               <div className="p-8">
                 <h3 className="display text-2xl">ทำไมต้อง Maison Fleur</h3>
@@ -174,7 +175,7 @@ export default async function HomePage() {
             <Reveal key={o.id} delay={i * 0.05}>
               <Link href={`/occasions/${o.slug}`} className="group relative block aspect-[4/3] overflow-hidden rounded-3xl bg-paper-deep">
                 <Image
-                  src={`/photos/${OCCASION_PHOTO[o.slug] ?? "rose-bouquet"}.jpg`}
+                  src={photo(OCCASION_PHOTO[o.slug] ?? "rose-bouquet")}
                   alt={o.name}
                   fill
                   sizes="(min-width:1024px) 33vw, 50vw"
@@ -252,7 +253,7 @@ export default async function HomePage() {
             </div>
           </Reveal>
           <div className="relative min-h-80 lg:h-full lg:min-h-[480px]">
-            <Image src="/photos/florist-hands-xl.jpg" alt="ฟลอริสต์จัดดอกไม้" fill sizes="660px" className="object-cover" />
+            <Image src={photo("florist-hands-xl")} alt="ฟลอริสต์จัดดอกไม้" fill sizes="660px" className="object-cover" />
           </div>
         </div>
       </section>

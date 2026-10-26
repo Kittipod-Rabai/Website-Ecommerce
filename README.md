@@ -80,8 +80,18 @@ npm run dev
 
 ### เตรียมก่อน (ทำครั้งเดียว)
 1. **Cloudinary** (เก็บรูป): สมัครฟรีที่ <https://cloudinary.com> → เข้า Dashboard → ส่วน *API Keys* คัดลอกค่า **API Environment variable** หน้าตาแบบ `cloudinary://123456:abcdEF@your-cloud-name`
-2. **GitHub:** push โค้ดขึ้น repo ของคุณ (Render ดึงโค้ดจากที่นี่)
-3. **Render:** สมัครที่ <https://render.com> แล้วเชื่อมบัญชี GitHub
+2. **อัปโหลดรูปประกอบร้านขึ้น Cloudinary** (ทำครั้งเดียว): เพิ่มบรรทัดนี้ในไฟล์ `shop/.env` (ไฟล์นี้ไม่ขึ้น Git) แล้วรันคำสั่ง
+   ```bash
+   # shop/.env
+   CLOUDINARY_URL="cloudinary://API_KEY:API_SECRET@CLOUD_NAME"
+   ```
+   ```bash
+   cd shop
+   npm run photos:upload
+   ```
+   สคริปต์จะส่งรูปทั้งหมดใน `shop/public/photos` (33 ไฟล์) ขึ้นโฟลเดอร์ `maison-fleur/seed` บน Cloudinary (รันซ้ำได้ ไฟล์เดิมถูกเขียนทับ ใช้ `npm run photos:upload -- --dry` เพื่อดูรายการก่อนโดยไม่อัปโหลดจริง) **ต้องทำก่อน deploy ครั้งแรก** เพราะเมื่อมี `CLOUDINARY_URL` เว็บจะดึงรูปจาก Cloudinary ทั้งหมด (ถ้ายังไม่อัปโหลดรูปจะขึ้นไม่ได้) ส่วนบนเครื่องพัฒนาที่ไม่ได้ตั้งค่านี้ เว็บยังใช้ไฟล์ในเครื่องตามเดิม
+3. **GitHub:** push โค้ดขึ้น repo ของคุณ (Render ดึงโค้ดจากที่นี่)
+4. **Render:** สมัครที่ <https://render.com> แล้วเชื่อมบัญชี GitHub
 
 ### สร้างเว็บ
 1. ใน Render กด **New → Blueprint** แล้วเลือก repo นี้ Render จะอ่าน `render.yaml` ให้เอง
