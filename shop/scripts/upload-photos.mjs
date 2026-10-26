@@ -59,10 +59,14 @@ for (const file of files) {
     if (!res.ok) {
       const text = await res.text();
       if (res.status === 403 && /missing permissions/i.test(text)) {
-        console.error("
-✘ API key นี้ไม่มีสิทธิ์อัปโหลด (create)
-  แก้: Cloudinary Console → Settings → API Keys → ใช้ key ที่มีสิทธิ์ครบ (Root/Full access)
-  หรือสร้าง key ใหม่ที่ติ๊กสิทธิ์ upload/create แล้วอัปเดต CLOUDINARY_URL ใน .env");
+        console.error(
+          [
+            "",
+            "✘ API key นี้ไม่มีสิทธิ์อัปโหลด (create)",
+            "  แก้: Cloudinary Console → Settings → API Keys → ใช้ key ที่มีสิทธิ์ครบ (Root/Full access)",
+            "  หรือสร้าง key ใหม่ที่ติ๊กสิทธิ์ upload/create แล้วอัปเดต CLOUDINARY_URL ใน .env",
+          ].join("\n"),
+        );
         process.exit(1);
       }
       throw new Error(`${res.status} ${text.slice(0, 120)}`);
